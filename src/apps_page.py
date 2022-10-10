@@ -1,4 +1,4 @@
-from gi.repository import Gtk, Gio, Adw, GObject
+from gi.repository import Gtk, Gio, Adw, GObject, GLib
 
 from pathlib import Path
 
@@ -26,10 +26,14 @@ class AppRow(Adw.ActionRow):
             css_classes=['icon-dropshadow'])
         
         icon_name = file.appsection.Icon.get()
+        flathub_prefix = f'{GLib.get_home_dir()}/.local/share/flatpak/appstream/flathub/x86_64/active/icons/128x128/'
+
         if icon_name == None:
             icon.set_from_icon_name('image-missing')
         elif Path(icon_name).exists():
             icon.set_from_file(icon_name)
+        elif Path(f'{flathub_prefix}/{icon_name}.png').exists():
+            icon.set_from_file(f'{flathub_prefix}/{icon_name}.png')
         else:
             icon.set_from_icon_name(icon_name)
 
